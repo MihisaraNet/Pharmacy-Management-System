@@ -1,0 +1,76 @@
+-- MySQL schema for Pharmacy
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  role ENUM('CUSTOMER','ADMIN') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS medicines (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  quantity INT NOT NULL,
+  expiry_date DATE NOT NULL,
+  category VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_active BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE IF NOT EXISTS sales (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  total_amount DECIMAL(10,2) NOT NULL,
+  sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('PENDING','COMPLETED','CANCELLED') NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS sale_items (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  sale_id BIGINT NOT NULL,
+  medicine_id BIGINT NOT NULL,
+  quantity INT NOT NULL,
+  unit_price DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (sale_id) REFERENCES sales(id),
+  FOREIGN KEY (medicine_id) REFERENCES medicines(id)
+);
+
+CREATE TABLE IF NOT EXISTS deliveries (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  sale_id BIGINT NOT NULL UNIQUE,
+  address VARCHAR(500) NOT NULL,
+  status ENUM('PENDING','SHIPPED','DELIVERED') NOT NULL,
+  delivery_date TIMESTAMP NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sale_id) REFERENCES sales(id)
+);
+
+CREATE TABLE IF NOT EXISTS reports (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  report_type ENUM('SALES_SUMMARY','LOW_STOCK','USER_ACTIVITY') NOT NULL,
+  generated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  content TEXT
+);
+
+-- Medicine Expiry Tracking Table
+CREATE TABLE IF NOT EXISTS medicine_expiry (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  medicine_id BIGINT NOT NULL,
+  batch_number VARCHAR(255) NOT NULL,
+  expiry_date DATE NOT NULL,
+  manufacture_date DATE NOT NULL,
+  quantity INT NOT NULL,
+  purchase_price DECIMAL(10,2),
+  supplier_name VARCHAR(255),
+  status ENUM('ACTIVE','EXPIRED','EXPIRING_SOON','DISPOSED','RECALLED') NOT NULL DEFAULT 'ACTIVE',
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (medicine_id) REFERENCES medicines(id),
+  INDEX idx_medicine_expiry_date (expiry_date),
+  INDEX idx_medicine_expiry_status (status),
+  INDEX idx_medicine_expiry_batch (batch_number)
+);

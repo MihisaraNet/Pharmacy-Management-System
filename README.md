@@ -1,236 +1,352 @@
-# 💊 RxFlow — Enterprise Pharmacy Management System
+# 💊 MediCare — Pharmacy Management System
 
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.x-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
-An enterprise-grade, full-stack pharmacy management ecosystem engineered with **Spring Boot**, **React (Vite)**, and **MySQL**. Developed as a **Second Year, First Semester Project**, RxFlow empowers modern pharmacies with robust Role-Based Access Control (RBAC), intelligent medicine batch-expiry tracking, simplified automated sales and inventory reporting, and a high-performance business-focused administrative control center.
+A full-stack **Pharmacy Management System** built with **Spring Boot**, **React (Vite)**, and **MySQL**. Developed as a **Second Year, First Semester Academic Project**, MediCare provides a complete solution for modern pharmacy operations — including Role-Based Access Control (RBAC), medicine inventory management, batch expiry tracking, sales processing, delivery tracking, and automated reporting.
 
 ---
 
 ## 📐 System Architecture
 
-Below is the design overview of the RxFlow architecture, demonstrating the seamless flow between the Client Single Page Application (SPA), the secure Spring Boot Gateway, the Service/Data persistence layers, and the MySQL Database.
-
-```mermaid
-graph TD
-    subgraph Client [Client Portal SPA]
-        A[React & Vite Web App] -->|HTTPS Requests + JWT Bearer| B(Axios API Client)
-        style A fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
-        style B fill:#805AD5,stroke:#333,stroke-width:1px,color:#fff
-    end
-
-    subgraph Server [Backend REST Engine]
-        B -->|API Traffic on :8082| C[Spring Security Filter & JWT Verification]
-        C -->|Authenticated Admin / Customer| D[REST Controller Layer]
-        D -->|Business Workflows| E[Service Layer]
-        E -->|Data Persistence| F[Spring Data JPA / Hibernate]
-        style C fill:#3182CE,stroke:#333,stroke-width:1px,color:#fff
-        style D fill:#DD6B20,stroke:#333,stroke-width:1px,color:#fff
-        style E fill:#319795,stroke:#333,stroke-width:1px,color:#fff
-        style F fill:#48BB78,stroke:#333,stroke-width:1px,color:#fff
-    end
-
-    subgraph Persistence [Data Engine]
-        F -->|Transactional SQL Queries| G[(MySQL DB)]
-        style G fill:#E53E3E,stroke:#333,stroke-width:2px,color:#fff
-    end
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     CLIENT (React SPA)                       │
+│   React 18 + Vite + Tailwind CSS + Axios + React Router     │
+└──────────────────────┬──────────────────────────────────────┘
+                       │  HTTPS + JWT Bearer Token
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  BACKEND (Spring Boot)                        │
+│                                                              │
+│  ┌─────────────────┐   ┌──────────────────────────────┐     │
+│  │ Spring Security │──▶│     REST Controllers          │     │
+│  │  JWT Filter     │   │  (Auth, Users, Medicines,    │     │
+│  └─────────────────┘   │   Sales, Delivery, Reports,  │     │
+│                        │   Expiry, Notifications)      │     │
+│                        └──────────────┬───────────────┘     │
+│                                       │                      │
+│                        ┌──────────────▼───────────────┐     │
+│                        │       Service Layer           │     │
+│                        └──────────────┬───────────────┘     │
+│                                       │                      │
+│                        ┌──────────────▼───────────────┐     │
+│                        │  Spring Data JPA / Hibernate  │     │
+│                        └──────────────┬───────────────┘     │
+└───────────────────────────────────────┼─────────────────────┘
+                                        │
+                       ┌────────────────▼────────────────┐
+                       │         MySQL 8.x Database        │
+                       └──────────────────────────────────┘
 ```
 
 ---
 
-## ✨ Core Feature Highlights
+## ✨ Features
 
-### 💼 Professional Business Admin Portal
-* **Streamlined UI:** A clean, professional, high-density dashboard tailored for fast-paced operational workflows, replacing distracting patterns with streamlined, high-contrast layouts.
-* **Consolidated Tabbed Workspace:** Effortlessly toggle between Users, Medicines, Orders, Deliveries, Expirations, and Reports within a single SPA viewport.
-* **Urgent Alarm Center:** High-visibility contextual banners notifying administrators of low stock thresholds or critical medicine expiration dates.
+### 👥 Admin Portal
+- **User Management** — Create, edit, and delete Admin and Customer accounts
+- **Medicine Management** — Add, update, and permanently delete medicines with cascade handling
+- **Sales Management** — View all orders with advanced filtering by status, date, customer, and amount
+- **Delivery Management** — Track and update delivery statuses for all orders
+- **Expiry Tracking** — Monitor medicine batches with automated status classification
+- **Report Generation** — One-click 30-day sales and low-stock inventory reports
+- **Urgent Alert Center** — Real-time banners for critical low stock and expiry warnings
 
-### 📅 Advanced Batch & Expiry Analytics
-* **Granular Batch Tracking:** Manage medicine quantities, purchase values, and manufacture/expiry dates linked to individual vendor batches.
-* **Financial Risk Assessment:** Displays the total value-at-risk for expired or near-expiry batches to optimize inventory write-offs.
-* **Dynamic Time-to-Expiry Tracking:** Automated server-side updates classifying batches into `ACTIVE`, `EXPIRING_SOON` (30 Days), `NEAR_EXPIRY` (7 Days), `EXPIRED`, `DISPOSED`, and `RECALLED` statuses.
-* **Bulk Disposal Actions:** Seamlessly dispose of multiple expired batches in a single operation.
+### 🛒 Customer Portal
+- **Browse Medicines** — Search, filter by category, and sort the full medicine catalogue
+- **Shopping Cart** — Add medicines, adjust quantities, and checkout
+- **Order History** — View personal order status and history
+- **Dark Mode** — Toggle between light and dark themes
 
-### 📊 One-Month Sales & Low Stock Reporting
-* **Optimized Reporting Pipelines:** One-click generation of the last 30 days' sales performance summaries.
-* **Inventory Control Reporting:** Instant aggregation of low-stock medicines, facilitating timely restocks and preventing stockouts.
+### 📅 Batch & Expiry Analytics
+- **Granular Batch Tracking** — Track batches by vendor, quantity, purchase value, manufacture date, and expiry date
+- **Automated Status Classification:**
 
-### 🔐 Secure RBAC & Authentication
-* **JWT Guarded Sessions:** Stateless authorization with short-lived tokens and secure client-side storage policies.
-* **Granular Endpoint Protection:** Spring Security rules utilizing `@PreAuthorize("hasRole('ADMIN')")` declarations to defend sensitive administrative resources.
-* **Robust Password Encryption:** Industry-standard **BCrypt** hashing functions securing authentication credentials.
+  | Status | Condition |
+  |---|---|
+  | `ACTIVE` | Expiry > 30 days away |
+  | `EXPIRING_SOON` | Expiry within 30 days |
+  | `NEAR_EXPIRY` | Expiry within 7 days |
+  | `EXPIRED` | Past expiry date |
+  | `DISPOSED` | Manually marked disposed |
+  | `RECALLED` | Marked as recalled |
+
+- **Financial Risk Assessment** — Shows total value-at-risk for expired/near-expiry batches
+- **Bulk Disposal** — Dispose of multiple expired batches in a single action
+
+### 📊 Reports
+- **30-Day Sales Summary** — Revenue, order count, and top-selling medicines
+- **Low Stock Report** — Instant list of medicines below threshold for timely restocking
+
+### 🔐 Security
+- **JWT Authentication** — Stateless sessions with short-lived JSON Web Tokens
+- **Role-Based Access Control** — `ADMIN` and `CUSTOMER` roles with `@PreAuthorize` endpoint protection
+- **BCrypt Password Hashing** — Industry-standard password encryption
+- **Environment Variable Secrets** — No credentials hardcoded in source code
 
 ---
 
-## 🛠️ Technology Stack & Dependencies
+## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework:** React 18 (Vite SPA template)
-- **Styling:** Tailwind CSS + PostCSS
-- **Routing:** React Router DOM (v6)
-- **HTTP Client:** Axios (configured with interceptors)
-- **Icons:** Lucide React
-- **Notifications:** React Toastify
+| Technology | Purpose |
+|---|---|
+| React 18 | UI framework (SPA) |
+| Vite | Build tool & dev server |
+| Tailwind CSS + PostCSS | Styling & design system |
+| React Router DOM v6 | Client-side routing |
+| Axios | HTTP client with JWT interceptors |
+| React Toastify | Toast notifications |
+| Lucide React | Icon library |
+| Context API | Auth, Cart & Theme state management |
 
 ### Backend
-- **Framework:** Spring Boot 3.x
-- **Security:** Spring Security & JWT (JSON Web Tokens)
-- **Persistence:** Spring Data JPA (Hibernate Dialect)
-- **Database:** MySQL 8.x
-- **Documentation:** Swagger UI / OpenAPI 3
-- **Build System:** Maven
+| Technology | Purpose |
+|---|---|
+| Spring Boot 3.x | Application framework |
+| Spring Security | Authentication & authorization |
+| JWT (JSON Web Tokens) | Stateless auth tokens |
+| Spring Data JPA | ORM & database abstraction |
+| Hibernate | JPA implementation |
+| MySQL 8.x | Relational database |
+| Swagger UI / OpenAPI 3 | API documentation |
+| Maven | Build & dependency management |
 
 ---
 
-## 🚀 Quick Start Guide (Local Setup)
+## 📁 Project Structure
 
-Follow these steps to run RxFlow in your local development environment.
+```
+pharmacy-app/
+├── backend/
+│   ├── src/main/java/com/example/pharmacy/
+│   │   ├── config/         # CORS, Web, Security config
+│   │   ├── controller/     # REST API endpoints
+│   │   │   ├── AuthController.java
+│   │   │   ├── UserController.java
+│   │   │   ├── MedicineController.java
+│   │   │   ├── MedicineExpiryController.java
+│   │   │   ├── SaleController.java
+│   │   │   ├── DeliveryController.java
+│   │   │   ├── ReportController.java
+│   │   │   └── ExpiryNotificationController.java
+│   │   ├── dto/            # Request/Response DTOs
+│   │   ├── entity/         # JPA entity models
+│   │   ├── repository/     # Spring Data repositories
+│   │   ├── security/       # JWT filter & security config
+│   │   ├── service/        # Business logic layer
+│   │   ├── strategy/       # Strategy pattern (reports)
+│   │   └── util/           # JWT utility class
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   ├── .env.example        # Environment variable template
+│   └── pom.xml
+│
+├── frontend/
+│   ├── src/
+│   │   ├── api/            # Axios instance & interceptors
+│   │   ├── components/     # Reusable components
+│   │   │   ├── NavBar.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   ├── SimpleExpiryDashboard.jsx
+│   │   │   └── SimpleExpiryNotifications.jsx
+│   │   ├── context/        # React Context providers
+│   │   │   ├── AuthContext.jsx
+│   │   │   ├── CartContext.jsx
+│   │   │   └── ThemeContext.jsx
+│   │   ├── pages/          # Page components
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Browse.jsx
+│   │   │   ├── Cart.jsx
+│   │   │   └── SimpleAdminPanel.jsx
+│   │   ├── index.css       # Global styles & Tailwind
+│   │   └── main.jsx        # App entry point & routing
+│   ├── index.html
+│   ├── package.json
+│   ├── tailwind.config.js
+│   └── vite.config.js
+│
+├── docker/
+│   └── docker-compose.yml  # MySQL container setup
+└── README.md
+```
+
+---
+
+## 🚀 Quick Start (Local Setup)
 
 ### Prerequisites
-* Java Development Kit (JDK) 17 or higher
-* Node.js (v18.x or higher) and npm
-* MySQL Server 8.0+ or Docker Desktop
+- Java Development Kit (JDK) 17+
+- Node.js v18+ and npm
+- MySQL Server 8.0+ **or** Docker Desktop
 
 ---
 
-### Step 1: Spin Up the Database
+### Step 1: Start the Database
 
-You can run MySQL locally using Docker or via your native database server.
-
-#### Option A: Docker Compose (Recommended)
-From the project root directory, navigate to the docker folder and spin up the database container:
+**Option A — Docker (Recommended)**
 ```bash
 cd docker
 docker-compose up -d
 ```
-*This configures a MySQL 8.0 server on port `3306` with the database `pharmacy` and the root password `root`.*
+> Starts MySQL 8.0 on port `3306`. Database: `pharmacy`, Password: `root`
 
-#### Option B: Manual Installation
-1. Connect to your MySQL server using your preferred client.
-2. Execute the following to create the database:
-   ```sql
-   CREATE DATABASE pharmacy_1db;
-   ```
-3. Update database credentials in the backend configurations.
+**Option B — Manual MySQL**
+```sql
+CREATE DATABASE phamarcy_db_1;
+```
 
 ---
 
-### Step 2: Configure & Start the Backend
+### Step 2: Configure & Run the Backend
 
-1. Navigate to the `backend` directory:
-   ```bash
-   cd backend
-   ```
-2. Open `src/main/resources/application.properties` and verify/update your MySQL credentials:
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/pharmacy_1db?createDatabaseIfNotExist=true
-   spring.datasource.username=root
-   spring.datasource.password=password123
-   ```
-3. Run the Spring Boot application:
-   ```bash
-   mvn spring-boot:run
-   ```
-4. Access the API & Documentation:
-   * **Base REST Endpoint:** `http://localhost:8082`
-   * **Swagger OpenAPI Docs:** [http://localhost:8082/swagger-ui/index.html](http://localhost:8082/swagger-ui/index.html)
+1. Navigate to the backend directory:
+```bash
+cd backend
+```
+
+2. Create your local environment file by copying the example:
+```bash
+copy .env.example .env
+```
+
+3. Fill in your `.env` file with your actual database credentials:
+```properties
+DB_URL=jdbc:mysql://localhost:3306/phamarcy_db_1
+DB_USERNAME=root
+DB_PASSWORD=your_password
+SERVER_PORT=8082
+```
+
+4. Run the Spring Boot application:
+```bash
+mvn spring-boot:run
+```
+
+5. Verify the backend is running:
+   - **Base API:** `http://localhost:8082`
+   - **Swagger Docs:** `http://localhost:8082/swagger-ui/index.html`
 
 > [!NOTE]
-> Database tables will be automatically initialized by JPA. You can manually run the `/backend/src/main/resources/sample-data.sql` file if you wish to populate the system with robust mock datasets.
+> JPA will auto-create/update tables on first run (`ddl-auto=update`). Populate the database with sample data using `/backend/src/main/resources/sample-data.sql` if available.
 
 ---
 
-### Step 3: Run the Frontend App
+### Step 3: Run the Frontend
 
-1. Navigate to the `frontend` directory:
-   ```bash
-   cd frontend
-   ```
-2. Install the node packages:
-   ```bash
-   npm install
-   ```
-3. Boot up the Vite dev server:
-   ```bash
-   npm run dev
-   ```
-4. Access the client app:
-   * **URL:** [http://localhost:5173](http://localhost:5173) (or the next available port indicated in the terminal)
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
 
----
+2. Install dependencies:
+```bash
+npm install
+```
 
-## 🔑 Default User Profiles
+3. Start the Vite dev server:
+```bash
+npm run dev
+```
 
-| Role | Username | Password | Purpose |
-| :--- | :--- | :--- | :--- |
-| **SYSTEM ADMIN** | `admin` | `password` | Complete access to inventory, users, sales, expiry modules |
-| **CUSTOMER** | `alice` | `password` | Search medications, place orders, view personal order history |
-
-> [!TIP]
-> If you need to create additional administrative users, you can use the secure `POST /api/users` endpoint authenticated as an existing admin.
+4. Open the app in your browser:
+   - **URL:** `http://localhost:5173`
 
 ---
 
-## 🛣️ Core API Endpoints
+## 🔑 Default Login Credentials
 
-### 🔐 Authentication & Accounts
-| Method | Endpoint | Access Role | Description |
-| :--- | :--- | :--- | :--- |
-| **POST** | `/api/auth/login` | PUBLIC | Validates credentials, returns JWT token & user metadata |
-| **POST** | `/api/auth/register` | PUBLIC | Register a new customer user profile |
+| Role | Username | Password | Access |
+|---|---|---|---|
+| **ADMIN** | `admin` | `password` | Full system access |
+| **CUSTOMER** | `alice` | `password` | Browse, cart & orders |
 
-### 💊 Medicine Management
-| Method | Endpoint | Access Role | Description |
-| :--- | :--- | :--- | :--- |
-| **GET** | `/api/medicines` | PUBLIC | List medicines (use query param `availableOnly=true` for customers) |
-| **POST** | `/api/medicines` | ADMIN | Add new medicine registry |
-| **PUT** | `/api/medicines/{id}` | ADMIN | Update medicine registry details |
-| **DELETE**| `/api/medicines/{id}` | ADMIN | Permanently delete medicine from database (cascade constraints) |
+---
 
-### 📅 Batch Expiry & Notifications
-| Method | Endpoint | Access Role | Description |
-| :--- | :--- | :--- | :--- |
-| **GET** | `/api/medicine-expiry` | ADMIN | List all active batch expiry tracking cards |
-| **POST** | `/api/medicine-expiry` | ADMIN | Register a new batch (batch #, expiry date, purchase price, supplier) |
-| **GET** | `/api/medicine-expiry/dashboard` | ADMIN | Fetch expiry KPIs (Value at risk, active, expired, near-expiry) |
-| **PUT** | `/api/medicine-expiry/bulk-status` | ADMIN | Bulk update status (e.g. update status of multiple to `DISPOSED`) |
-| **GET** | `/api/notifications/summary` | ADMIN | Fetch total alert count categorized by priority (DANGER, WARNING, INFO) |
+## 🛣️ API Endpoints
+
+### 🔐 Authentication
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `POST` | `/api/auth/login` | PUBLIC | Login, returns JWT token |
+| `POST` | `/api/auth/register` | PUBLIC | Register new customer |
+
+### 👥 Users
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/api/users` | ADMIN | List all users |
+| `POST` | `/api/users` | ADMIN | Create new user |
+| `PUT` | `/api/users/{id}` | ADMIN | Update user |
+| `DELETE` | `/api/users/{id}` | ADMIN | Delete user |
+
+### 💊 Medicines
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/api/medicines` | PUBLIC | List medicines (`?availableOnly=true`) |
+| `POST` | `/api/medicines` | ADMIN | Add new medicine |
+| `PUT` | `/api/medicines/{id}` | ADMIN | Update medicine |
+| `DELETE` | `/api/medicines/{id}` | ADMIN | Delete medicine (hard delete) |
+
+### 📅 Batch Expiry
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/api/medicine-expiry` | ADMIN | List all expiry batches |
+| `POST` | `/api/medicine-expiry` | ADMIN | Register new batch |
+| `GET` | `/api/medicine-expiry/dashboard` | ADMIN | Expiry KPIs & value at risk |
+| `PUT` | `/api/medicine-expiry/bulk-status` | ADMIN | Bulk update batch status |
+| `GET` | `/api/notifications/summary` | ADMIN | Alert counts by priority |
 
 ### 🛒 Sales & Orders
-| Method | Endpoint | Access Role | Description |
-| :--- | :--- | :--- | :--- |
-| **POST** | `/api/sales` | CUSTOMER | Create checkout order payload containing items and total amount |
-| **GET** | `/api/sales` | ADMIN | Fetch comprehensive sales and orders logs |
-| **GET** | `/api/reports` | ADMIN | Generate 1-month automatic sales performance metrics |
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `POST` | `/api/sales` | CUSTOMER | Create order/checkout |
+| `GET` | `/api/sales` | ADMIN | View all sales & orders |
 
----
+### 🚚 Deliveries
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/api/deliveries` | ADMIN | List all deliveries |
+| `PUT` | `/api/deliveries/{id}` | ADMIN | Update delivery status |
 
-## 🔒 Production Hardening Checklist
-
-When preparing to deploy RxFlow to production, ensure the following guidelines are met:
-1. **JWT Secret Protection:** Change the default JWT secret key in `JwtUtil` class. Do not commit keys to public version control.
-2. **Database Hardening:** In `application.properties`, update `spring.jpa.hibernate.ddl-auto` to `validate` or `none` to prevent accidental schema modifications.
-3. **CORS Configuration:** Configure restrictive Allowed Origins in `WebConfig` rather than wildcards (`*`).
-4. **Enforce SSL/TLS:** Ensure all requests are served exclusively over HTTPS.
-5. **Session Derivation:** Ensure customer IDs for checkout requests are resolved securely from the server-side JWT session context rather than trusting client-sent payload IDs.
+### 📊 Reports
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/api/reports` | ADMIN | Generate 30-day sales & low-stock report |
 
 ---
 
 ## 👥 Project Contributors
 
-Developed as a **Second Year, First Semester Academic Project**, we would like to acknowledge the following contributors for their hard work and dedication to developing the RxFlow Pharmacy Management System:
+Developed as a **Second Year, First Semester Academic Project** at SLIIT.
 
-| Student ID | Contributor Name | Core Contribution / Module |
-| :--- | :--- | :--- |
+| Student ID | Contributor | Module |
+|---|---|---|
 | **IT24100878** | Imalki G.N. | Process Sales |
-| **IT24200343** | Avekshika A. H. E. | Monitor Expiry |
+| **IT24200343** | Avekshika A.H.E. | Monitor Expiry |
 | **IT24100765** | Perera S.A.L.N. | Track Delivery |
 | **IT24100883** | Karanayaka K.K.I.M. | Generate Reports |
 | **IT24100862** | Kavishka G.D.H. | Manage Users |
-| **IT24100830** | Supeshala R. D. M. | Manage Stock |
+| **IT24100830** | Supeshala R.D.M. | Manage Stock |
 
 ---
 
-This project provides a robust, low-latency pharmacy control deck. For bug reports, suggestions, or contributing code, please open an issue in the repository.
+## 🔒 Production Checklist
+
+Before deploying to production, ensure the following:
+
+- [ ] Set all environment variables (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`) on the server
+- [ ] Change the default JWT secret key in `JwtUtil.java`
+- [ ] Switch `spring.jpa.hibernate.ddl-auto` from `update` to `validate`
+- [ ] Disable SQL logging (`spring.jpa.show-sql=false`)
+- [ ] Configure restrictive CORS origins in `WebConfig.java` (no wildcards)
+- [ ] Enforce HTTPS / SSL for all traffic
+- [ ] Resolve customer ID from server-side JWT context, not from client payload
+
+---
+
+> For bug reports or contributions, please open an issue in the repository.

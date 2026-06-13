@@ -35,6 +35,10 @@ target/
 build/
 dist/
 
+# Vite cache
+.vite/
+frontend/.vite/
+
 # Environment
 .env
 .env.local

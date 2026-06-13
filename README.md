@@ -14,33 +14,33 @@ A full-stack **Pharmacy Management System** built with **Spring Boot**, **React 
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     CLIENT (React SPA)                       │
+│                     CLIENT (React SPA)                      │
 │   React 18 + Vite + Tailwind CSS + Axios + React Router     │
 └──────────────────────┬──────────────────────────────────────┘
                        │  HTTPS + JWT Bearer Token
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                  BACKEND (Spring Boot)                        │
-│                                                              │
+│                  BACKEND (Spring Boot)                      │
+│                                                             │
 │  ┌─────────────────┐   ┌──────────────────────────────┐     │
-│  │ Spring Security │──▶│     REST Controllers          │     │
+│  │ Spring Security │──▶│     REST Controllers         │     │
 │  │  JWT Filter     │   │  (Auth, Users, Medicines,    │     │
 │  └─────────────────┘   │   Sales, Delivery, Reports,  │     │
-│                        │   Expiry, Notifications)      │     │
+│                        │   Expiry, Notifications)     │     │
 │                        └──────────────┬───────────────┘     │
-│                                       │                      │
+│                                       │                     │
 │                        ┌──────────────▼───────────────┐     │
-│                        │       Service Layer           │     │
+│                        │       Service Layer          │     │
 │                        └──────────────┬───────────────┘     │
-│                                       │                      │
+│                                       │                     │
 │                        ┌──────────────▼───────────────┐     │
-│                        │  Spring Data JPA / Hibernate  │     │
+│                        │  Spring Data JPA / Hibernate │     │
 │                        └──────────────┬───────────────┘     │
 └───────────────────────────────────────┼─────────────────────┘
                                         │
                        ┌────────────────▼────────────────┐
-                       │         MySQL 8.x Database        │
-                       └──────────────────────────────────┘
+                       │         MySQL 8.x Database      │
+                       └─────────────────────────────────┘
 ```
 
 ---
